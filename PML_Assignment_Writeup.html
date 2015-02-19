@@ -1,0 +1,101 @@
+
+
+
+
+<html>
+<head></head>
+
+
+<body>  
+
+<center><h1>Practical Machine Learning Class Assignment Write-up</h1></center>
+
+</left><b>Project Overview</b></left><br><br>
+
+</left>The goal of this project is to predict the manner in which participants in an exercise did the exercise. There are 20 observations to predict, after determining the best approach to prediction using a training data set. The variable to predict is the "classe" variable.</left><br><br>
+
+</left><b>Step 1: Inspect training data, remove unneeded rows and fields</b></left><br><br>
+
+</left>The first step is to visually inspect the training and test data. The classe variable appears to have five possibilities: A, B, C, D, and E. This suggests a classification prediction algorithm.</left><br><br>
+</left>In the training data set, records with a value of "yes" in the new_window field appear to be summary statistics for a group of data. These may not be useful for predicting individual observations. When these records are filtered out of the dataset, many other fields are either all blank or have values of all “NA”. These fields will not be useful in predicting the classe variable. Removing these fields reduces the number of columns in the training set from 160 to 60.</left><br><br>
+
+</left><b>Step 2: Analyze remaining variables for suitability as predictors</b></left><br><br>
+
+</left>With several variables removed, the next step is the review the remaining variables for suitability as predictors. The nearZeroVar function is used to analyze the remaining variables, with particular attention paid to the percent Unique output. Selected variables that have very few unique values are shown in <b>Table 1</b>. These variables will initially be left in as possible predictors, but may need to be removed:</left><br><br>
+
+<center><b>Table 1</b></center><br><br>
+
+<center><img src=Table1.png  /></center><br><br>
+
+</left><b>Step 3: Run initial model to further analyze variables</b></left><br><br>
+
+</left>With 60 variables remaining, an initial CART model is run on the full training data set using the rpart method in the caret package. The X variable (unlabeled in the .csv) is the sole variable used to create the tree. This variable appears to be a numbered index field. When plotted against the class variable in <b>Figure 1</b>, it can be seen that the class variable is sorted in order (A through E). </left><br><br>
+
+<center><b>Figure 1: index Variable vs. classe</b></center><br><br>
+
+<center><img src=Figure1.png  /></center><br><br>
+
+</left>It appears probable that the dataset was originally constructed by sorting the data by the classe field and then adding the index variable. This index variable is removed from the data as it will not hold predictive value.</left><br><br>
+
+</left>When a CART model is run without the "X" index field, the nodes are create by fields other than those listed in <b>Table 1</b>.</left><br><br>
+
+</left><b>Step 4: Cross-Validation Approach</b></left><br><br>
+
+</left>One of the key outputs of the analysis is an estimate of the out-of-sample error. To accomplish this, a simple data partition is created in the training data. 90% of the data remains in the training data set. 10% is randomly selected to constitute a validation data set. The model will be trained on the training data, and used to predict the classe variable of the validation set. The accuracy of the validation set prediction will be the estimate of the out-of-sample error.</left><br><br>
+
+</left>Note that a k-folds cross-validation approach was considered. However, it is unclear whether the accuracy results of the cross-validation method using caret would produce a true out-of-sample estimate.    </left><br><br>
+
+</left><b>Step 5: Model Results</b></left><br><br>
+
+</left>Three initial models are fitted to the training data, all using the caret package in R:</left><br>
+</left>1.	A classification and regression tree (CART) model</left><br>
+</left>2.	A random forest model</left><br>
+</left>3.	A gbm boosting model</left><br><br>
+
+</left>Note that the seed was set to 1 in order to enable reproducible results.</left><br><br>
+
+</left><b>CART Model Results</b></left><br><br>
+
+</left>A CART model was fit to the training data using the rpart method in the caret package. </left><br><br>
+
+</left>The in-sample accuracy using this method, reflecting the algorithm’s accuracy in predicting the classe variable of the training data set, is 49.86%. The out-of-sample accuracy, reflecting the algorithm’s accuracy in predicting the classe variable of the validation data set, is 48.68%. If the in-sample accuracy were substantially higher than the out-of-sample accuracy, the model may be affected by over-fitting. However, the similarity of the two accuracy rates provides evidence that the model is not affected by over-fitting.</left><br><br>
+
+</left>The classification tree created using the rpart method on the training data is shown in <b>Figure 2</b>.</left><br><br>
+
+<center><b>Figure 2: rpart Classification Tree</b></center><br><br>
+
+<center><img src=Figure2.png  /></center><br><br>
+
+</left><b>Random Forest Model Results</b></left><br><br>
+
+</left>A random forest model was fit to the training data using the rpart method in the caret package. However, this approach did not appear to resolve and was ended after six hours.</left><br><br>
+
+</left>As a second option, the randomForest package was used to create a random forest model in R. This model resolved quickly. Both the in-sample and out-of-sample accuracy are 100%. The author has been unable to find an approach to plot the specific indicator variables and nodes within the randomForest package, but the overall statistics of both the training and validation set are shown in <b>Figure 3</b> and <b>Figure 4</b>.</left><br><br>
+
+<center><b>Figure 3: Overall Statistics of randomForest Algorithm on Training Data</b></center><br><br>
+
+<center><img src=Figure3.png  /></center><br><br>
+
+<center><b>Figure 4: Overall Statistics of randomForest Algorithm on Validation Data</b></center><br><br>
+
+<center><img src=Figure4.png  /></center><br><br>
+
+</left><b>GBM Forest Model Results</b></left><br><br>
+
+</left>Like the rf method within the caret package, the gbm method within caret was also not able to resolve to a model.</left><br><br>
+
+</left><b>Step 6: Model Selection</b></left><br><br>
+
+</left>Given the results of the three models, the random forest model has been selected as the best approach to predict the classe variable in the test data set. The 100% accuracy of the random forest model on the validation data set suggests an accuracy of 100% when the model is applied to the test data, and an error rate of 0%.</left><br><br>
+
+</left><b>Step 7: Apply Model to Test Data</b></left><br><br>
+
+</left>When the random forest model is applied to the 20 test data observations, the model predicts the classe variable for all 20 observations accurately.</left><br><br>
+
+</body>
+
+
+
+
+</html>
+
